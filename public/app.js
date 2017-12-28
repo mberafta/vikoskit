@@ -10,7 +10,8 @@
         'uploadDirectiveApp',
         'uploadApp',
         'vikoApp',
-        'login'
+        'login',
+        'httpInterceptorFactory'
     ];
 
     const routes = {
@@ -24,38 +25,46 @@
     };
 
     angular.module('main', injectables)
-        .config(['$routeProvider', function ($routeProvider) {
-            $routeProvider
-                .when(routes.home, {
-                    controller: 'homeController',
-                    templateUrl: viewsPath + 'home.html'
-                })
-                .when(routes.doc, {
-                    controller: 'documentController',
-                    templateUrl: viewsPath + 'document.html'
-                })
-                .when(routes.pdf, {
-                    controller: 'pdfController',
-                    templateUrl: viewsPath + 'pdf.html'
-                })
-                .when(routes.upload, {
-                    controller: 'uploadController',
-                    templateUrl: viewsPath + 'upload.html'
-                })
-                .when(routes.viko, {
-                    controller: 'vikoController',
-                    templateUrl: viewsPath + 'viko.html'
-                })
-                .when(routes.login, {
-                    controller: 'loginController',
-                    templateUrl: viewsPath + 'login.html'
-                })
-                .otherwise({
-                    redirectTo: routes.home
-                });
-        }])
+        .config([
+            '$routeProvider',
+            '$httpProvider',
+            function (
+                $routeProvider,
+                $httpProvider
+            ) {
+                $routeProvider
+                    .when(routes.home, {
+                        controller: 'homeController',
+                        templateUrl: viewsPath + 'home.html'
+                    })
+                    .when(routes.doc, {
+                        controller: 'documentController',
+                        templateUrl: viewsPath + 'document.html'
+                    })
+                    .when(routes.pdf, {
+                        controller: 'pdfController',
+                        templateUrl: viewsPath + 'pdf.html'
+                    })
+                    .when(routes.upload, {
+                        controller: 'uploadController',
+                        templateUrl: viewsPath + 'upload.html'
+                    })
+                    .when(routes.viko, {
+                        controller: 'vikoController',
+                        templateUrl: viewsPath + 'viko.html'
+                    })
+                    .when(routes.login, {
+                        controller: 'loginController',
+                        templateUrl: viewsPath + 'login.html'
+                    })
+                    .otherwise({
+                        redirectTo: routes.home
+                    });
 
-        .run(['$rootScope', '$window', function ($rootScope, $window) {
+                $httpProvider.interceptors.push('httpInterceptor');
+            }])
+
+        .run(['$rootScope', '$window', '$http', function ($rootScope, $window, $http) {
 
             (function () {
 
@@ -76,6 +85,8 @@
             $rootScope.$on('$routeChangeSuccess', function () {
                 $rootScope.$broadcast('changeTitle');
             });
+
+            $http.defaults.headers.common['x-access-token'] = sessionStorage.getItem('currentToken') || "";
         }]);
 
 })();

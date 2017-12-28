@@ -41,6 +41,7 @@ angular.module('login', [])
                 promise.then(
                     function(response){
                         $scope.currentUser = response.data;
+                        sessionStorage.setItem('currentToken', response.data.token);
                     },
                     function(response){
                         console.log(response);
