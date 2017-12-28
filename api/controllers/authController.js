@@ -13,6 +13,7 @@ module.exports.authenticate = function(req, res){
                     name: data.name,
                     token: data.generateJWT()
                 };
+                // lol
                 sendResponse(res, 200, returnedData);
             }
             if(err){
