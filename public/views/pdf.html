@@ -1,0 +1,22 @@
+<div class="row">
+    <div class="col-xs-12">
+        <div class="btn-group">
+            <button class="btn btn-success" ng-click="pdfURL='test.pdf'">Document 1</button>
+            <button class="btn btn-danger" ng-click="pdfURL='test2.pdf'">Document 2</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-info" ng-click="gotoPage(1)">|&lt;</button>
+            <button class="btn btn-primary" ng-click="prevPage()">&lt;</button>
+            <button class="btn btn-primary" ng-click="nextPage()">&gt;</button>
+            <button class="btn btn-info" ng-click="gotoPage(totalPages)">&gt;|</button>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 text-center">
+        <span class="label" ng-show="totalPages">{{currentPage}}/{{totalPages}}</span>
+    </div>
+</div>
+<div class="row">
+    <pdfviewer src="{{pdfURL}}" on-page-load='pageLoaded(page,total)' id="viewer" load-progress='loadProgress(loaded, total, state)'></pdfviewer>
+</div>

@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col-xs-12">
+        <h3 class="text-center">Touchez un dé pour commencer !</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-6">
+        <canvas id="dice" width="100" height="100" style="display:flex;clear:both; margin-top:50px;margin-left:auto; margin-right:20px; margin-bottom:75px;"></canvas>
+    </div>
+    <div class="col-xs-6">
+        <canvas id="dice2" width="100" height="100" style="display:flex;clear:both; margin-top:50px;margin-right:auto; margin-left:20px;margin-bottom:75px;"></canvas>
+    </div>
+</div>
+<hr>
+<div class="row" style="padding:10px;">
+    <div class="col-md-2 col-md-offset-4 col-xs-4 col-xs-offset-2">
+        <div class="alert alert-success text-center viko-dice-content">
+            <p>{{diceOne}}</p>
+        </div>
+    </div>
+    <div class="col-md-2 col-xs-4">
+        <div class="alert alert-success viko-dice-content text-center">
+            <p>{{diceTwo}}</p>
+        </div>
+    </div>
+</div>
+<div class="row" ng-show="showRule">
+    <div class="col-md-6 col-md-offset-3 col-xs-12 text-center">
+        <div class="alert viko-rule-content">
+            <p><span style="color:burlywood;">Règle</span></p>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ipsum sem, iaculis pellentesque sapien nec, vehicula
+                porttitor odio. Vivamus eget tristique dui. Duis ultrices nulla nec felis accumsan tristique.
+        </div>
+    </div>
+</div>

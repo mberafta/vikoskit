@@ -1,0 +1,14 @@
+<div class="col-xs-12">
+    <p class="text-center"><strong>Application perméttant de tester des composants</strong></p>
+</div>
+<div class="col-xs-12" class="text-center">
+    <button class="btn btn-primary" ng-click="getItems()">TEST API</button>
+    <button class="btn btn-info" ng-click="reset()"> Reset</button>
+</div>
+<div class="col-xs-6 col-xs-offset-3" ng-if="items.length > 0">
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="i in items">
+            NOM : {{i.name}}, VALEUR : {{i.value}}
+        </li>
+    </ul>
+</div>

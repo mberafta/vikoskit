@@ -1,0 +1,39 @@
+<div class="row">
+    <div class="col-xs-8 col-xs-offset-2 text-center">
+        <button class="btn btn-primary" ng-click="getReceipt()">Ticket de caisse</button>
+        <button class="btn btn-info" ng-click="getDocumentFromOrder()">Facture</button>
+        <button class="btn btn-danger" ng-click="getTicketCB()">Ticket CB</button>
+    </div>
+    <div id="output-tables" class="table-responsive" ng-if="true">
+
+    </div>
+    <div class="col-xs-6 col-xs-offset-3" id="main" style="margin-top:50px; position:absolute; left:-999px;">
+
+    </div>
+    <div class="col-xs-6 col-xs-offset-3" style="margin-top: 2em;">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Nb de lignes</th>
+                        <th>Header</th>
+                        <th>Footer</th>
+                        <th>Hauteur totale (px)</th>
+                        <th>Correcteur</th>
+                        <th>jsPDF taille (pt)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="d in billDatas">
+                        <td>{{d.length }}</td>
+                        <td>{{d.headerHeight | number:2}}</td>
+                        <td>{{d.footerHeight | number:2}}</td>
+                        <td>{{d.totalHeight | number:2}}</td>
+                        <td>{{d.sizeCorrector | number:2}}</td>
+                        <td>{{d.jspdfHeight | number:2}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
