@@ -1,9 +1,75 @@
 <div class="container">
-    <div class="row text-center">
-        <div class="col-xs-6 col-xs-offset-3">
-            <form>
+    <div class="row vert-space">
+        <div class="col-xs-12 col-md-4 col-md-offset-4">
+            <div class="alert alert-success text-center" ng-if="currentUser != null && login">
+                <p>{{currentUser.name}} est maintenant connecté !</p>
+            </div>
+        </div>
+    </div>
+    <div class="row vert-space">
+        <div class="col-xs-12 text-center">
+            <button class="btn btn-warning" ng-click="login = true">CONNEXION</button>
+            <button class="btn btn-info" ng-click="login = false">INSCRIPTION</button>
+        </div>
+    </div>
+    <div class="row text-center vert-space" style="background:#1abc9c; padding-bottom:2em; border-radius:5px;">
+        <div class="col-xs-12 col-md-6 col-md-offset-3 text-center" ng-hide="login">
+            <div class="col-xs-12 text-center">
+                <h2 class="text-center">INSCRIPTION</h1>
+            </div>
+            <form name="form" novalidate>
                 <div class="form-group">
-                    <a class="btn btn-info" ng-click="getFBAuthentication()"><span class="fa fa-facebook">FACEBOOK</span></a>
+                    <label>NOM</label>
+                    <input class="form-control" ng-model="user.name" name="name" ng-required="true" ng-pattern="namePattern">
+                    <div class="alert alert-danger" ng-if="!form.name.$pristine && form.name.$invalid">
+                        <p ng-if="form.name.$error.required">Veuillez saisir un nom.</p>
+                        <p ng-if="form.name.$error.pattern">Le nom saisi doit comporter au moins 3 caractères.</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>EMAIL</label>
+                    <input class="form-control" ng-model="user.email" name="email" ng-required="true" ng-pattern="emailPattern">
+                    <div class="alert alert-danger" ng-if="!form.email.$pristine && form.email.$invalid">
+                        <p ng-if="form.email.$error.required">Veuillez saisir une adresse mail.</p>
+                        <p ng-if="form.email.$error.pattern">L'email saisi n'est pas valide.</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>MOT DE PASSE</label>
+                    <input class="form-control" ng-model="user.password" name="password" type="password" ng-required="true" ng-pattern="namePattern">
+                    <div class="alert alert-danger" ng-if="!form.password.$pristine && form.password.$invalid">
+                        <p ng-if="form.password.$error.required">Veuillez saisir un mot de passe.</p>
+                        <p ng-if="form.password.$error.pattern">Le mot de passe saisi doit comporter au moins 3 caractères.</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>MOT DE PASSE</label>
+                    <input class="form-control" ng-model="user.confirmationPassword" name="confirmationPassword" type="password" ng-required="true"
+                        ng-pattern="namePattern">
+                    <div class="alert alert-danger" ng-if="!form.confirmationPassword.$pristine && form.confirmationPassword.$invalid">
+                        <p ng-if="form.confirmationPassword.$error.required">Veuillez saisir un mot de passe de confirmation.</p>
+                        <p ng-if="form.confirmationPassword.$error.pattern">Le mot de passe saisi doit comporter au moins 3 caractères.</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-info" ng-click="createUser()" ng-disabled="form.$invalid">VALIDER</button>
+                </div>
+            </form>
+        </div>
+        <hr>
+        <div class="col-xs-12 col-md-6 col-md-offset-3 text-center" ng-show="login">
+            <h2>Authentification</h2>
+            <form name="loginForm">
+                <div class="form-group">
+                    <label>NOM</label>
+                    <input class="form-control" name="name" ng-model="loginModel.name">
+                </div>
+                <div class="form-group">
+                    <label></label>
+                    <input class="form-control" name="" ng-model="loginModel.password">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" ng-click="loginUser()" ng-disabled="login.$invalid">VALIDER</button>
                 </div>
             </form>
         </div>

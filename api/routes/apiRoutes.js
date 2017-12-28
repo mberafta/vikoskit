@@ -1,32 +1,21 @@
-var express = require('express');
-var router = express.Router();
-var bodyParser = require('body-parser');
-var passport = require('passport');
+var express = require('express'),
+    router = express.Router(),
+    bodyParser = require('body-parser'),
+    passport = require('passport');
 
-var itemsController = require('../controllers/itemsController');
+var itemsController = require('../controllers/itemsController'),
+    usersController = require('../controllers/usersController'), 
+    authController = require('../controllers/authController');
 
+// items actions
 router.get('/items', itemsController.getItems);
 router.get('/base64', itemsController.getBase64);
 router.post('/upload', itemsController.upload);
 
-router.get('/auth/facebook', function (req, res) {
-    console.log("Auth FB called ! ");
-    passport.authenticate('facebook', {
-        scope: ['public_profile', 'email']
-    })
-});
+// users actions
+router.post('/user', usersController.createUser);
 
-// handle the callback after facebook has authenticated the user
-router.get('/auth/facebook/callback',
-    passport.authenticate('facebook', {
-        successRedirect: '/',
-        failureRedirect: '/'
-    }));
-
-// route for logging out
-router.get('/logout', function (req, res) {
-    req.logout();
-    res.redirect('/');
-});
+// auth actions
+router.post('/authenticate', authController.authenticate);
 
 module.exports = router;

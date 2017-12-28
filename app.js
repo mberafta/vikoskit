@@ -8,8 +8,16 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var mongoose = require('mongoose');
 
-const url = "mongodb://mberafta:nilmar69@ds131687.mlab.com:31687/mberafta-db";
-mongoose.connect(url, { useMongoClient: true });
+const url = "mongodb://mikaviko:nilmar69@ds131687.mlab.com:31687/mberafta-db";
+const localUri = "mongodb://localhost/mbapp";
+mongoose.connect(localUri, { useMongoClient: true});
+mongoose.connection.on('connected', function(){
+  console.log("Connection à la base établie ...");
+});
+
+mongoose.connection.on('error', function(err){
+  console.log(err);
+});
 
 var app = module.exports = express();
 

@@ -24,3 +24,8 @@
     font-size: 54px;
   }
 }
+
+.vert-space{
+  margin-top:1em;
+  margin-bottom:1em;
+}
