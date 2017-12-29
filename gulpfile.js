@@ -1,5 +1,3 @@
-import { start } from 'repl';
-
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var browserSync = require('browser-sync');
@@ -15,12 +13,12 @@ gulp.task('sass', function () {
         .pipe(gulp.dest('public/assets'))
         .pipe(browserSync.reload({
             stream: true
-        }))
+        }));
 });
 
 gulp.task('watch', ['browserSync', 'sass'], function () {
     return gulp.watch('public/assets/scss/*.scss', ['sass']);
-    return gulp.watch('public/assets/views/*.html', browserSync.reload);
+    return gulp.watch('public/assets/views/*.html', browserSync.reload({ stream: true }));
     return gulp.watch('public/assets/**/*.html', browserSync.reload);
 });
 

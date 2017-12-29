@@ -11,7 +11,7 @@ var mongoose = require('mongoose');
 const url = "mongodb://mikaviko:nilmar69@ds131687.mlab.com:31687/mberafta-db";
 const localUri = "mongodb://localhost/mbapp";
 
-mongoose.connect(url, { useMongoClient: true});
+mongoose.connect(localUri, { useMongoClient: true});
 
 mongoose.connection.on('connected', function(){
   console.log("Connection à la base établie ...");

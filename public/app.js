@@ -4,6 +4,7 @@
 
     let injectables = [
         'ngRoute',
+        'ngAnimate',
         'ngPDFViewer',
         'itemsService',
         'localStorageService',

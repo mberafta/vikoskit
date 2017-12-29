@@ -39,16 +39,20 @@ angular.module('main')
     // Navbar part controller
     .controller("navbarController", ['$scope', '$window', '$location', function ($scope, $window, $location) {
 
-        (function(s){
-            s.getUser = function(){
+        (function (s) {
+            s.getUser = function () {
                 let currentUser = $window.sessionStorage.getItem('currentUser');
-                if(currentUser){
+                if (currentUser) {
+                    let regex = /\{/g;
                     return currentUser;
+                }
+                else {
+                    return null;
                 }
             };
 
-            s.logout = function(){
-                $window.sessionStorage.setItem('currentUser', null);
+            s.logout = function () {
+                $window.sessionStorage.removeItem('currentUser');
                 $location.path('/login');
             };
         })($scope);
