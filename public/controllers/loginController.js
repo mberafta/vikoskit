@@ -19,7 +19,10 @@ angular.module('login', [])
 
                 promise.then(
                     function (response) {
-                        console.log(response.data);
+                        if (response.data && (response.data.token && response.data.name)) {
+                            setTokenAndUser(response.data.token, response.data.name);
+                            $location.path('/');
+                        }
                     },
                     function (response) {
                         console.log(response);
@@ -33,24 +36,29 @@ angular.module('login', [])
             if (valid) {
                 let data = $scope.loginModel;
                 let promise = $http({
-                    method:"POST",
+                    method: "POST",
                     url: "/api/authenticate",
                     data: data
                 });
 
                 promise.then(
-                    function(response){
+                    function (response) {
                         $scope.currentUser = response.data;
-                        sessionStorage.setItem('currentToken', response.data.token);
-                        sessionStorage.setItem('currentUser', response.data.name);
+                        setTokenAndUser(response.data.token, response.data.name);
                         $location.path('/');
                     },
-                    function(response){
+                    function (response) {
                         console.log(response);
                     }
                 );
             }
         };
+
+        // PRIVATE
+        function setTokenAndUser(token, name) {
+            sessionStorage.setItem('currentToken', token);
+            sessionStorage.setItem('currentUser', name);
+        }
 
         // INIT
         (function (s) {
@@ -74,7 +82,7 @@ angular.module('login', [])
             s.currentUser = null;
             /////////////////////
 
-            s.emailPattern = /\w+\-?\.?\w+?@\w+\.\w{2,3}/g;
+            s.emailPattern = /\w+\-?\.?\w+?@\w+\.\w{2,3}/;
             s.namePattern = /\w{3,}$/;
 
             s.form = this.userForm;

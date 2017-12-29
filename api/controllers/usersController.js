@@ -1,4 +1,8 @@
 var user = require('../models/user');
+var sendResponse = function(res, status, data){
+    res.status(status);
+    res.json(data);
+};
 
 module.exports.createUser = function (req, res) {
     let body = req.body;
@@ -13,10 +17,16 @@ module.exports.createUser = function (req, res) {
         console.log(newUser);
         console.log("Ajout à la base de données ... \n");
         user.create(newUser, function(err, data){
-            if(err)
-                console.log(err);
-            if(data)
-                console.log(data);
+            if(err){
+                sendResponse(res, 400, err);
+            }
+            if(data){
+                let returnedData = {
+                    name: data.name,
+                    token: data.generateJWT()
+                };
+                sendResponse(res, 201, returnedData);
+            }
         });
 
     }
