@@ -5,6 +5,10 @@
   "scripts": {
     "start": "nodemon ./bin/www"
   },
+  "engines":{
+    "node":"6.10.3",
+    "npm": "3.10.10"
+  },
   "dependencies": {
     "body-parser": "~1.17.1",
     "cookie-parser": "^1.4.3",
