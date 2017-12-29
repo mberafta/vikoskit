@@ -1,5 +1,5 @@
 angular.module('login', [])
-    .controller('loginController', ['$scope', '$http', '$timeout', function ($scope, $http, $timeout) {
+    .controller('loginController', ['$scope', '$http', '$timeout', '$location', function ($scope, $http, $timeout, $location) {
 
         // METHODS
         $scope.createUser = function () {
@@ -42,6 +42,8 @@ angular.module('login', [])
                     function(response){
                         $scope.currentUser = response.data;
                         sessionStorage.setItem('currentToken', response.data.token);
+                        sessionStorage.setItem('currentUser', response.data.name);
+                        $location.path('/');
                     },
                     function(response){
                         console.log(response);

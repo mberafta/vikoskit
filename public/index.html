@@ -16,10 +16,11 @@
     <script src="./assets/js/pdf.js"></script>
     <script src="./assets/js/ng-pdfviewer.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-    <nav class="navbar navbar-inverse" style="margin-bottom: 0px !important;">
+    <nav class="navbar navbar-inverse" style="margin-bottom: 0px !important;" ng-controller="navbarController">
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -44,10 +45,18 @@
                         <a href="#!/viko">VIKOSKIT</a>
                     </li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
+                <ul class="nav navbar-nav navbar-right" ng-if="getUser() == 'null'">
                     <li>
                         <a href="#!/login">
                             <span class="glyphicon glyphicon-log-in"></span>  &nbsp;Connexion / Inscription</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right" ng-if="getUser() != 'null'">
+                    <li class="active">
+                        <a>{{getUser()}}</a>
+                    </li>
+                    <li>
+                        <a ng-click="logout()" style="cursor: pointer;"><span class="glyphicon glyphicon-log-out"></span>  &nbsp;Déconnexion</a>
                     </li>
                 </ul>
             </div>

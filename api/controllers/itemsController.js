@@ -8,14 +8,18 @@ var sendResponse = function (res, status, data) {
 };
 
 module.exports.getItems = function (req, res) {
-    let items = [
-        { name: 'item 1', value: '1' },
-        { name: 'item 2', value: '2' },
-        { name: 'item 3', value: '3' },
-        { name: 'item 4', value: '4' }
-    ];
-
-    sendResponse(res, 200, items);
+    if (req.tokenSuccess) {
+        let items = [
+            { name: 'item 1', value: '1' },
+            { name: 'item 2', value: '2' },
+            { name: 'item 3', value: '3' },
+            { name: 'item 4', value: '4' }
+        ];
+        sendResponse(res, 200, items);
+    }
+    if (req.tokenError) {
+        sendResponse(res, 400, { message : "Vous n'avez pas de jeton d'autorisation." });
+    }
 };
 
 module.exports.getBase64 = function (req, res) {

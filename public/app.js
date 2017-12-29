@@ -64,10 +64,9 @@
                 $httpProvider.interceptors.push('httpInterceptor');
             }])
 
-        .run(['$rootScope', '$window', '$http', function ($rootScope, $window, $http) {
+        .run(['$rootScope', '$window', '$http', '$location', function ($rootScope, $window, $http, $location) {
 
             (function () {
-
                 let billDatas = localStorage.getItem('billDatas');
                 if (!billDatas) {
                     let datas = [];
@@ -79,11 +78,16 @@
                     let datas = [];
                     localStorage.setItem('receiptDatas', JSON.stringify(datas));
                 }
-
             })();
 
             $rootScope.$on('$routeChangeSuccess', function () {
-                $rootScope.$broadcast('changeTitle');
+                let currentUser = sessionStorage.getItem('currentUser');
+                if(currentUser != "null"){
+                    $rootScope.$broadcast('changeTitle');
+                }
+                else{
+                    $location.path('/login');
+                }
             });
 
             $http.defaults.headers.common['x-access-token'] = sessionStorage.getItem('currentToken') || "";
