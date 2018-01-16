@@ -31,7 +31,17 @@ angular.module('main')
         })($scope);
 
         $scope.$on('changeTitle', function () {
-            $scope.pageTitle = $location.path() == "/viko" ? "VIKOSKIT" : "TESTING APP";
+            switch ($location.path()) {
+                case "/viko":
+                    $scope.pageTitle = "VIKOSKIT";
+                    break;
+                case "/animate":
+                    $scope.pageTitle = "MB ANIMATE";
+                    break;
+                default:
+                    $scope.pageTitle = "TESTING APP";
+                    break;
+            }
         });
 
     }])

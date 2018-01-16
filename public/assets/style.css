@@ -1,7 +1,23 @@
 .testing {
   width: 71.42857%; }
 
-  .vert-space{
-    padding-top:1em;
-    padding-bottom:1em;
-  }
+.vert-space {
+  padding-top: 1em;
+  padding-bottom: 1em; }
+
+.mb-item {
+  transition: ease-in-out 0.5s; }
+
+.mb-item.ng-leave {
+  opacity: 1; }
+
+.mb-item.ng-leave.ng-leave-active {
+  opacity: 0;
+  transform: translateX(-999px); }
+
+.mb-item.ng-enter {
+  opacity: 0;
+  transform: scale(1.1); }
+
+.mb-item.ng-enter.ng-enter-active {
+  opacity: 1; }

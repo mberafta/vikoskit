@@ -12,7 +12,8 @@
         'uploadApp',
         'vikoApp',
         'login',
-        'httpInterceptorFactory'
+        'httpInterceptorFactory',
+        'mbAnimate'
     ];
 
     const routes = {
@@ -22,7 +23,8 @@
         dice: '/dice',
         upload: '/upload',
         viko: '/viko',
-        login: '/login'
+        login: '/login',
+        animate: '/animate'
     };
 
     angular.module('main', injectables)
@@ -58,6 +60,10 @@
                         controller: 'loginController',
                         templateUrl: viewsPath + 'login.html'
                     })
+                    .when(routes.animate, {
+                        controller:'animateController',
+                        templateUrl: viewsPath + 'animate.html'
+                    })
                     .otherwise({
                         redirectTo: routes.home
                     });
@@ -83,10 +89,10 @@
 
             $rootScope.$on('$routeChangeSuccess', function () {
                 let currentUser = sessionStorage.getItem('currentUser');
-                if(currentUser != "null"){
+                if (currentUser != "null") {
                     $rootScope.$broadcast('changeTitle');
                 }
-                else{
+                else {
                     $location.path('/login');
                 }
             });
@@ -95,6 +101,26 @@
         }]);
 
 })();
+
+window.fbAsyncInit = function () {
+    FB.init({
+        appId: '1965942110333573',
+        cookie: true,
+        xfbml: true,
+        version: '2.11'
+    });
+
+    FB.AppEvents.logPageView();
+
+};
+
+(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) { return; }
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/all.js";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
 
 
 

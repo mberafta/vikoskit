@@ -54,6 +54,19 @@ angular.module('login', [])
             }
         };
 
+        $scope.FB_LOGIN = function(){
+            FB.login(function(response){
+                if(response.authResponse){
+                    FB.api('/me?fields=id, name, picture', function(response){
+                        console.dir(response);
+                    });
+                }
+                else{
+                    console.log('L\'opération de login n\'a pu arriver à terme.');
+                }
+            });
+        };
+
         // PRIVATE
         function setTokenAndUser(token, name) {
             sessionStorage.setItem('currentToken', token);
@@ -87,6 +100,6 @@ angular.module('login', [])
 
             s.form = this.userForm;
             s.loginForm = this.loginForm;
-        })($scope);
+        })($scope); 
 
     }]);

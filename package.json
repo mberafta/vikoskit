@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "gulp sass && nodemon ./bin/www",
+    "gulpwatch" : "gulp watch"
   },
   "engines":{
     "node":"6.10.3",
