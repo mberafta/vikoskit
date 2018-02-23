@@ -1,6 +1,7 @@
 var fs = require('fs');
 var formidable = require('formidable');
 var path = require('path');
+var xlsToJson = require('xls-to-json');
 
 var sendResponse = function (res, status, data) {
     res.status(status);
@@ -18,7 +19,7 @@ module.exports.getItems = function (req, res) {
         sendResponse(res, 200, items);
     }
     if (req.tokenError) {
-        sendResponse(res, 400, { message : "Vous n'avez pas de jeton d'autorisation." });
+        sendResponse(res, 400, { message: "Vous n'avez pas de jeton d'autorisation." });
     }
 };
 
@@ -59,4 +60,11 @@ module.exports.upload = function (req, res) {
 
     // parse the incoming request containing the form data
     form.parse(req);
+};
+
+module.exports.xlsToJson = function (req, res) {
+    var XLSX = require('xlsx');
+    var workbook = XLSX.readFile('gtinref.xls');
+    var sheet_name_list = workbook.SheetNames;
+    sendResponse(res, 200, XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]], { defval: null, dateNF: "" }));
 };

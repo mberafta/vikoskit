@@ -1,0 +1,35 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <ul class="list-group">
+                <li class="list-group-item" ng-repeat="m in messages">
+                    <span class="text-danger">{{m.author}}</span> : {{m.content}}
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-6" ng-if="chatbox.currentTheme.proposals.length > 0">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-success" ng-repeat="p in chatbox.currentTheme.proposals" ng-click="changeTheme(p.themeId)">
+                    {{p.content}}
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-6" ng-if="currentAnswers.length > 0">
+            <label>CONSEILS PROPOSÉS</label>
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-success" ng-repeat="ans in currentAnswers">
+                        {{ans.content}}
+                    </li>
+                </ul>
+            </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Réponse (mots clés, exemple: lettre suivie)</label>
+                <textarea ng-model="currentReply.value" class="form-control"></textarea>
+                <button class="btn btn-primary" ng-click="replyToBot()" style="margin-top:10px;">Envoyer</button>
+            </div>
+        </div>
+    </div>
+</div>

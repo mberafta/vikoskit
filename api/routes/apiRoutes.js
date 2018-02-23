@@ -36,6 +36,7 @@ router.use(function (req, res, next) {
 router.get('/items', itemsController.getItems);
 router.get('/base64', itemsController.getBase64);
 router.post('/upload', itemsController.upload);
+router.get('/xls', itemsController.xlsToJson);
 
 // users actions
 router.post('/user', usersController.createUser);

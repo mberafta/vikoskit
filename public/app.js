@@ -13,7 +13,8 @@
         'vikoApp',
         'login',
         'httpInterceptorFactory',
-        'mbAnimate'
+        'mbAnimate',
+        'chatboxApp'
     ];
 
     const routes = {
@@ -24,7 +25,8 @@
         upload: '/upload',
         viko: '/viko',
         login: '/login',
-        animate: '/animate'
+        animate: '/animate',
+        chatbox: '/chatbox'
     };
 
     angular.module('main', injectables)
@@ -63,6 +65,10 @@
                     .when(routes.animate, {
                         controller:'animateController',
                         templateUrl: viewsPath + 'animate.html'
+                    })
+                    .when(routes.chatbox, {
+                        controller:'chatboxController',
+                        templateUrl: viewsPath + 'chatbox.html'
                     })
                     .otherwise({
                         redirectTo: routes.home

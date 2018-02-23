@@ -37,19 +37,22 @@
                         <a href="#!/home">Accueil</a>
                     </li>
                     <li>
-                        <a href="#!/document">Documents</a>
+                        <a href="#!/document">JsPdf</a>
                     </li>
                     <li>
-                        <a href="#!/pdf">PDF</a>
+                        <a href="#!/pdf">Pdf Viewer</a>
                     </li>
                     <li>
-                        <a href="#!/viko">VIKOSKIT</a>
+                        <a href="#!/animate">Animations</a>
+                    </li>
+                    <li>
+                        <a href="#!/viko">Vikoskit</a>
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" ng-if="getUser() == null">
                     <li>
                         <a href="#!/login">
-                            <span class="glyphicon glyphicon-log-in"></span>  &nbsp;Connexion / Inscription</a>
+                            <span class="glyphicon glyphicon-log-in"></span> &nbsp;Connexion / Inscription</a>
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" ng-if="getUser() != null">
@@ -57,7 +60,8 @@
                         <a>{{getUser()}}</a>
                     </li>
                     <li>
-                        <a ng-click="logout()" style="cursor: pointer;"><span class="glyphicon glyphicon-log-out"></span>  &nbsp;Déconnexion</a>
+                        <a ng-click="logout()" style="cursor: pointer;">
+                            <span class="glyphicon glyphicon-log-out"></span> &nbsp;Déconnexion</a>
                     </li>
                 </ul>
             </div>
@@ -90,6 +94,7 @@
     <script src="./controllers/vikoController.js"></script>
     <script src="./controllers/loginController.js"></script>
     <script src="./controllers/animateController.js"></script>
+    <script src="./controllers/chatboxController.js"></script>
 
     <!-- FACTORIES -->
     <script src="./factories/httpInterceptor.js"></script>
