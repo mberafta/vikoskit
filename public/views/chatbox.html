@@ -1,9 +1,9 @@
 <div class="container">
-    <div class="row">
+    <div class="row" >
         <div class="col-md-6">
-            <ul class="list-group">
-                <li class="list-group-item" ng-repeat="m in messages">
-                    <span class="text-danger">{{m.author}}</span> : {{m.content}}
+            <ul class="list-group" style="height:500px; overflow-y:scroll;">
+                <li ng-repeat="m in messages" class="{{m.author == 'MOI' ? 'left-space list-group-item list-group-item-success' : 'list-group-item list-group-item-info'}}">
+                    <span class="yellow-text">{{m.author}}</span> : {{m.content}}
                 </li>
             </ul>
         </div>
@@ -29,6 +29,7 @@
                 <label>Réponse (mots clés, exemple: lettre suivie)</label>
                 <textarea ng-model="currentReply.value" class="form-control"></textarea>
                 <button class="btn btn-primary" ng-click="replyToBot()" style="margin-top:10px;">Envoyer</button>
+                <button class="btn btn-primary" ng-click="reset()" style="margin-top:10px;">Reset</button>
             </div>
         </div>
     </div>

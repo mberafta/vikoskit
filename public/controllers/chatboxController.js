@@ -1,7 +1,7 @@
 (function (ang) {
 
     ang.module('chatboxApp', [])
-        .controller('chatboxController', ['$scope', function ($scope) {
+        .controller('chatboxController', ['$scope', '$route', function ($scope, $route) {
             function analyze(str, words) {
                 console.log("ANALYSE : ", str, words);
                 let result = [];
@@ -12,7 +12,7 @@
                         let partVector = toVector(part);
                         words.forEach(function (word, ind) {
                             let wordVector = toVector(word);
-                            if (angle(partVector, wordVector) > 0.85) {
+                            if (angle(partVector, wordVector) > 0.93) {
                                 result.push(word);
                             }
                         });
@@ -55,10 +55,10 @@
                     { letter: 'y', index: '25' },
                     { letter: 'z', index: '26' }
                 ];
-    
+
                 s.themes = [
                     {
-                        themeId:"acc",
+                        themeId: "acc",
                         type: 'Accueil',
                         acceptedWords: [
                             'Hello', 'Bonjour', 'Salut', 'Coucou'
@@ -67,10 +67,10 @@
                             return 'Bonjour ' + username + ', que voulez-vous savoir?';
                         },
                         proposals: [
-                            { content: "Comment ajouter un produit au panier", themeId: "pan1" },
+                            { content: "Comment ajouter un produit au panier", themeId: "scan" },
                             { content: "Comment puis-je affranchir une lettre", themeId: "affr1" }
                         ]
-                        
+
                     },
                     {
                         themeId: "affr1",
@@ -81,7 +81,7 @@
                         logicalAnswer: function (userMessage) {
                             let keywords = analyze(userMessage.toLowerCase(), this.acceptedWords);
                             let result = "";
-                            let finalResult = { msg:"", keywords:keywords };
+                            let finalResult = { msg: "", keywords: keywords };
                             if (keywords.length > 0) {
                                 keywords.forEach((kw, i) => {
                                     result += " " + kw;
@@ -92,11 +92,39 @@
                             return finalResult;
                         },
                         themeAnswer: "En quoi puis-je vous aider dans l'affranchissement?",
-                        finalAnwsers:[
-                            { keyword:"lettre", content:"Appuyez sur le bouton affranchissement afin d'aller à la pesée de votre lettre" },
-                            { keyword:"suivie", content:"Votre vignette sera accompagnée d'une vignette de suivi ainsi que d'un ticket de suivi" },
-                            { keyword:"prioritaire", content:"La livraison se fait j+1" }
-                        ] 
+                        finalAnwsers: [
+                            { keyword: "lettre", content: "Appuyez sur le bouton affranchissement afin d'aller à la pesée de votre lettre" },
+                            { keyword: "suivie", content: "Votre vignette sera accompagnée d'une vignette de suivi ainsi que d'un ticket de suivi" },
+                            { keyword: "prioritaire", content: "La livraison se fait j+1" }
+                        ]
+                    },
+                    {
+                        themeId: "scan",
+                        type: 'Scan',
+                        acceptedWords: [
+                            'flash', 'produit', 'gtin', 'code', 'barre', 'article', 'rayon'
+                        ],
+                        logicalAnswer: function (userMessage) {
+                            let keywords = analyze(userMessage.toLowerCase(), this.acceptedWords);
+                            let result = "";
+                            let finalResult = { msg: "", keywords: keywords };
+                            if (keywords.length > 0) {
+                                keywords.forEach((kw, i) => {
+                                    result += " " + kw;
+                                });
+                            }
+                            finalResult.msg = "Vous souhaitez être aidé pour le(s) sujet(s) suivant(s) : " + result;
+
+                            return finalResult;
+                        },
+                        themeAnswer: "En quoi puis-je vous aider relativement au scan de produit?",
+                        finalAnwsers: [
+                            { keyword: "flash", content: "Prenez le flasheur et scannez un produit pour l'ajouter au panier" },
+                            { keyword: "code", content: "Le code barre à flasher est au dos de l'article" },
+                            { keyword: "barre", content: "Le code barre à flasher est au dos de l'article" },
+                            { keyword: "produit", content: "Les articles sont devant vous en dessous de la borne" },
+                            { keyword: "article", content: "Les articles sont devant vous en dessous de la borne" }
+                        ]
                     }
                 ];
 
@@ -106,7 +134,7 @@
                     currentTheme: s.themes[0]
                 };
 
-                s.messages.push({ author: "ISI Bot", content:s.themes[0].logicalAnwser("cher utilisateur") });
+                s.messages.push({ author: "ISI Bot", content: s.themes[0].logicalAnwser("cher utilisateur") });
 
                 s.changeTheme = function (themeId) {
                     s.chatbox.currentTheme = s.themes.find((t) => { return t.themeId == themeId });
@@ -117,20 +145,28 @@
                     s.messages.push({ author: "MOI", content: s.currentReply.value });
 
                     s.messages.push({
-                        author:"ISI Bot",
+                        author: "ISI Bot",
                         content: s.chatbox.currentTheme.logicalAnswer(s.currentReply.value).msg
                     });
 
                     s.currentAnswers = [];
 
-                    s.chatbox.currentTheme.logicalAnswer(s.currentReply.value).keywords.forEach(function(kw, index){
+                    s.chatbox.currentTheme.logicalAnswer(s.currentReply.value).keywords.forEach(function (kw, index) {
                         let fa = s.chatbox.currentTheme.finalAnwsers.find((f) => {
                             return f.keyword == kw;
                         });
 
-                        if(fa != null)
+                        if (fa != null)
                             s.currentAnswers.push(fa);
+
+                        if (s.currentAnswers.length == 0)
+                            s.currentAnswers.push({ keyword: "oups", content: "Il semblerait que je ne comprenne pas votre demande :(" });
                     });
+
+                };
+
+                s.reset = function(){
+                    $route.reload();
                 };
 
             })($scope);
@@ -139,16 +175,47 @@
             function angle(vec1, vec2) {
                 let vec1Norm = norm2(vec1),
                     vec2Norm = norm2(vec2),
-                    scalProd = scalarProduct(vec1, vec2),
-                    result = scalProd / (vec1Norm * vec2Norm);
+                    scalProd,
+                    normFactor = 1 / (vec1Norm * vec2Norm),
+                    result;
 
-                    console.log("Angle : ", result);
+                if (vec1.length == vec2.length + 1) {
+                    for (let j = 0; j < vec1.length; j++) {
+                        let tempVec = Array.from(vec2),
+                            tempResult;
+                        tempVec.splice(j, 0, 0);
+                        scalProd = scalarProduct(vec1, tempVec);
+                        tempResult = scalProd * normFactor;
+                        if (tempResult > 0.93) {
+                            result = tempResult;
+                        }
+                    }
+                }
+
+                if (vec2.length == vec1.length + 1) {
+                    for (let j = 0; j < vec2.length; j++) {
+                        let tempVec = Array.from(vec1),
+                            tempResult;
+                        tempVec.splice(j, 0, 0);
+                        scalProd = scalarProduct(vec2, tempVec);
+                        tempResult = scalProd * normFactor;
+                        if (tempResult > 0.93) {
+                            result = tempResult;
+                        }
+                    }
+                }
+
+                if(vec1.length == vec2.length){
+                    scalProd = scalarProduct(vec1,vec2);
+                    result = scalProd * normFactor;
+                }
+
+                console.log("Angle : ", result);
 
                 return Math.abs(result);
             }
 
             function scalarProduct(vec1, vec2) {
-                console.log('produit scalaire : ', vec1, vec2);
                 let valid = vec1.length == vec2.length;
                 let result = 0;
                 if (valid) {

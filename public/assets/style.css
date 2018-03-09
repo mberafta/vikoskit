@@ -21,3 +21,9 @@
 
 .mb-item.ng-enter.ng-enter-active {
   opacity: 1; }
+
+.left-space {
+  margin-left: 15px; }
+
+.yellow-text {
+  color: yellow; }
