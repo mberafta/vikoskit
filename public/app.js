@@ -26,7 +26,8 @@
         viko: '/viko',
         login: '/login',
         animate: '/animate',
-        chatbox: '/chatbox'
+        chatbox: '/chatbox',
+        math:'/math'
     };
 
     angular.module('main', injectables)
@@ -63,12 +64,16 @@
                         templateUrl: viewsPath + 'login.html'
                     })
                     .when(routes.animate, {
-                        controller:'animateController',
+                        controller: 'animateController',
                         templateUrl: viewsPath + 'animate.html'
                     })
                     .when(routes.chatbox, {
-                        controller:'chatboxController',
+                        controller: 'chatboxController',
                         templateUrl: viewsPath + 'chatbox.html'
+                    })
+                    .when(routes.math, {
+                        controller: 'mathController',
+                        templateUrl: viewsPath + 'math.html'
                     })
                     .otherwise({
                         redirectTo: routes.home
@@ -77,7 +82,7 @@
                 $httpProvider.interceptors.push('httpInterceptor');
             }])
 
-        .run(['$rootScope', '$window', '$http', '$location', function ($rootScope, $window, $http, $location) {
+        .run(['$rootScope', '$window', '$http', '$location', 'itemsManager', function ($rootScope, $window, $http, $location, itemsManager) {
 
             (function () {
                 let billDatas = localStorage.getItem('billDatas');
@@ -108,17 +113,17 @@
 
 })();
 
-window.fbAsyncInit = function () {
-    FB.init({
-        appId: '1965942110333573',
-        cookie: true,
-        xfbml: true,
-        version: '2.11'
-    });
+// window.fbAsyncInit = function () {
+//     FB.init({
+//         appId: '1965942110333573',
+//         cookie: true,
+//         xfbml: true,
+//         version: '2.11'
+//     });
 
-    FB.AppEvents.logPageView();
+//     FB.AppEvents.logPageView();
 
-};
+// };
 
 (function (d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0];

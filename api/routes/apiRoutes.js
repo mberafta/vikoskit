@@ -37,6 +37,7 @@ router.get('/items', itemsController.getItems);
 router.get('/base64', itemsController.getBase64);
 router.post('/upload', itemsController.upload);
 router.get('/xls', itemsController.xlsToJson);
+router.post('/dk6', itemsController.createHttpsRequest);
 
 // users actions
 router.post('/user', usersController.createUser);

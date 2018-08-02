@@ -70,7 +70,7 @@
                     _ctx.clearRect(0, 0, $scope.width, $scope.height);
                     var nb = Math.floor(Math.random() * 6) + 1;
 
-                    if(isOne)
+                    if (isOne)
                         $scope.diceOne = nb;
                     else
                         $scope.diceTwo = nb;
@@ -96,7 +96,7 @@
                     s.canvas2 = document.getElementById('dice2');
 
                     $scope.width = s.canvas.width,
-                    $scope.height = s.canvas.height;
+                        $scope.height = s.canvas.height;
 
                     s.ctx = s.canvas.getContext('2d');
                     s.ctx.fillStyle = "#FFFFFF";

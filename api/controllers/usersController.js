@@ -28,6 +28,5 @@ module.exports.createUser = function (req, res) {
                 sendResponse(res, 201, returnedData);
             }
         });
-
     }
 };

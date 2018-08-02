@@ -18,6 +18,7 @@
     <script src="./assets/js/ng-pdfviewer.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="./helpers/epsonHelper.js"></script>
 </head>
 
 <body>
@@ -48,6 +49,9 @@
                     <li>
                         <a href="#!/viko">Vikoskit</a>
                     </li>
+                    <li>
+                        <a href="#!/math">Maths</a>
+                    </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" ng-if="getUser() == null">
                     <li>
@@ -77,6 +81,8 @@
     <div class="container-fluid" ng-view>
 
     </div>
+    <!-- HELPERS -->
+
     <script src="./assets/js/rx.all.js"></script>
     <script src="./assets/js/jspdf.min.js"></script>
     <script src="./assets/js/jspdf.plugin.autotable.js"></script>
@@ -95,6 +101,7 @@
     <script src="./controllers/loginController.js"></script>
     <script src="./controllers/animateController.js"></script>
     <script src="./controllers/chatboxController.js"></script>
+    <script src="./controllers/mathController.js"></script>
 
     <!-- FACTORIES -->
     <script src="./factories/httpInterceptor.js"></script>

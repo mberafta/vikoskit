@@ -3,6 +3,7 @@
         <button class="btn btn-primary" ng-click="getReceipt()">Ticket de caisse</button>
         <button class="btn btn-info" ng-click="getDocumentFromOrder()">Facture</button>
         <button class="btn btn-danger" ng-click="getTicketCB()">Ticket CB</button>
+        <button class="btn btn-success" ng-click="epsonPrint()">POC EPSON</button>
     </div>
     <div id="output-tables" class="table-responsive" ng-if="true">
 
@@ -16,21 +17,27 @@
                 <thead>
                     <tr>
                         <th>Nb de lignes</th>
-                        <th>Header</th>
-                        <th>Footer</th>
-                        <th>Hauteur totale (px)</th>
-                        <th>Correcteur</th>
-                        <th>jsPDF taille (pt)</th>
+                        <th>Header height</th>
+                        <th>Body height</th>
+                        <th>Footer height</th>
+                        <th>Div receipt height</th>
+                        <th>container height</th>
+                        <th>Approx(N)</th>
+                        <th>jsPDF taille (px * 0.75)</th>
+                        <th>Position finale Y sur jspdf</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="d in billDatas">
                         <td>{{d.length }}</td>
                         <td>{{d.headerHeight | number:2}}</td>
+                        <td>{{d.bodyHeight | number:2}}</td>
                         <td>{{d.footerHeight | number:2}}</td>
                         <td>{{d.totalHeight | number:2}}</td>
+                        <td>{{d.mainHeight | number:2}}</td>
                         <td>{{d.sizeCorrector | number:2}}</td>
                         <td>{{d.jspdfHeight | number:2}}</td>
+                        <td>{{d.finalStartY | number:2}}</td>
                     </tr>
                 </tbody>
             </table>

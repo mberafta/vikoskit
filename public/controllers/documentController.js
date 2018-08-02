@@ -3,11 +3,13 @@ angular.module('main').controller('documentController', [
     'datas',
     '$http',
     'tpe',
+    'itemsManager',
     function (
         $scope,
         datas,
         $http,
-        tpe) {
+        tpe,
+        itemsManager) {
 
         Array.prototype.groupBy = function (prop) {
             return this.reduce(function (groups, item) {
@@ -16,6 +18,10 @@ angular.module('main').controller('documentController', [
                 groups[val].push(item);
                 return groups;
             }, {});
+        };
+
+        String.prototype.splice = function (start, delCount, newSubStr) {
+            return this.slice(0, start) + newSubStr + this.slice(start + Math.abs(delCount));
         };
 
         $scope.lengthParam = { value: 1 };
@@ -493,11 +499,17 @@ angular.module('main').controller('documentController', [
                 final_info1 = 'MERCI ET A BIENTOT',
                 body_title = 'DÉTAIL DE LA COMMANDE';
 
+            // Affectation de la taille de police des tableaux
+            headerTable.style.fontSize = "9px;";
+            footerTable.style.fontSize = "9px;";
+            bodyTable.style.fontSize = "9px;";
+
             createTextNode(main_title, container);
             createTextNode(stripe, container);
             createTextNode(main_info1, container);
             createTextNode(main_info2, container);
             createTextNode(stripe, container);
+
             // Header du ticket de caisse
             let head_tr1 = document.createElement('tr'),
                 head_tr2 = document.createElement('tr'),
@@ -557,22 +569,19 @@ angular.module('main').controller('documentController', [
             document.getElementById('main').appendChild(container);
             let receiptDomElement = document.getElementById('receipt');
 
-            (function (domElement) {
+            (function (domElement, header, body, footer, main) {
                 console.dir(domElement);
                 let posX = 55,
                     posY = 65,
                     offset = 7,
+                    N = order.lignesCommandes.length,
                     corrector = getReceiptSizeCorrector(order.lignesCommandes.length),
-                    totalHeight = domElement.clientHeight * 0.9 * (1 + (corrector / 100) - Math.pow((corrector / 100), 2)), //(domElement.clientHeight + 2 * posY + (20 * 7 + 21 * 1.15)) * (0.75/divider)
-                    sizeMin = '7', sizeMax = '8',
-                    doc = new jsPDF('p', 'pt', [300, totalHeight]);
+                    totalHeight = (domElement.offsetHeight + 2 * posY) * 0.9, // 0.75 pt par pixel,
+                    experimentalHeight = posY + (17 * offset) + N * (2.5 * 8 + 3.5 * 1.15 + offset) + posY + (N + 1) * offset,
+                    sizeMin = '6', sizeMax = '7',
+                    doc = new jsPDF('p', 'pt', [300, experimentalHeight]);
 
                 doc.setFont('courier');
-
-                console.log('DOM ELEMENT HEIGHT : ' + domElement.clientHeight);
-                console.log('CORRECTEUR : ' + corrector);
-                console.log('TOTAL HEIGHT CALCULATED : ' + totalHeight);
-                console.log('DOC LINE HEIGHT : ' + doc.getLineHeight());
 
                 // 2 premiers champs du header
                 addText(doc, sizeMax, 'bold', domElement.childNodes[0].innerHTML, posX + 50, posY, false);
@@ -663,11 +672,35 @@ angular.module('main').controller('documentController', [
                 addText(doc, sizeMax, 'bold', domElement.childNodes[11].innerHTML, posX, final_info_startY, false);
                 addText(doc, sizeMax, 'bold', domElement.childNodes[12].innerHTML, posX + 45, final_info_startY + 2 * offset, false);
 
+                let ls = localStorage,
+                    _datas = JSON.parse(ls.getItem('billDatas'));
+
+                let newData = {
+                    length: order.lignesCommandes.length,
+                    sizeCorrector: approximate2(N),
+                    headerHeight: header.clientHeight,
+                    bodyHeight: body.clientHeight,
+                    footerHeight: footer.clientHeight,
+                    mainHeight: main.clientHeight,
+                    totalHeight: domElement.clientHeight,
+                    jspdfHeight: totalHeight,
+                    finalStartY: final_info_startY + 4 * offset
+                };
+
+                let existingData = _datas.find(function (d) { return d.length == newData.length });
+                if (existingData == null) {
+                    _datas.push(newData);
+                }
+
+                $scope.billDatas = _datas;
+
+                ls.setItem('billDatas', JSON.stringify(_datas));
+
                 var b64 = doc.output('datauristring');
                 var dataToPrint = {
                     image: b64,
                     name: 'cb.pdf',
-                    height: totalHeight * 2.6, // (totalHeight + 2 * 240) * 1.15 + 100
+                    height: experimentalHeight * 2.75, // (totalHeight + 2 * 240) * 1.15 + 100
                     orientation: 1,
                     cut: 1
                 };
@@ -683,9 +716,9 @@ angular.module('main').controller('documentController', [
                 //     data: dataToPrint
                 // });
 
-                //document.body.removeChild(domElement);
+                document.body.removeChild(domElement);
 
-            })(receiptDomElement);
+            })(receiptDomElement, headerTable, bodyTable, footerTable, container);
 
             return null;
         };
@@ -750,6 +783,101 @@ angular.module('main').controller('documentController', [
             }
         };
 
+        $scope.epsonPrint = function () {
+            let bufferObj = {
+                extra: "G1  800080",
+                toPrint: "DD     27 07 18   Lettre verte           25.60"
+            };
+
+            let baseUrl = "http://localhost:1337/epson/print?";
+            let parts = bufferObj.toPrint.split(/\s{2,}/);
+
+            let line4 = createLine(4, [parts[0], parts[1].replace(/\s/g, '/')]),
+                line5 = createLine(5, ['', parts[3]]),
+                line6 = createLine(6, ['','', ' ' + bufferObj.extra, parts[2]]),
+                processedSeq = [];
+
+            processedSeq = line4.concat(line5.concat(line6));
+
+            processedSeqStr = JSON.stringify(processedSeq);
+            console.log(processedSeq);
+
+            // ########################################### 
+            // ########## VIGNETTE LETTRE VERTE ##########
+            // ########################################### 
+            // #    DD         dd/MM/yy                  #
+            // #                               X.YY EUR  # 
+            // #             AA nnnnnn    NOM_AFFR       # 
+            // ###########################################                                                     
+
+            let encodedUrl = encodeURI(baseUrl + "buffer=" + processedSeqStr);
+
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', encodedUrl, true);
+            xhr.send(null);
+        }
+
+        function createLine(index, entries) {
+            let result;
+            let sequences = itemsManager.getSequences();
+            let seq = [...sequences.find((s, i) => { return s.index == index; }).value];
+
+            if (seq != null) {
+
+                // Transformation du tableau afin de regrouper les lots d'espaces consécutifs
+                // pour les considérer comme des "placeholders"
+                let step = 0;
+                let savedIndexes = [];
+                let processedSeq = [];
+                let placeHolders = [];
+                console.log(seq);
+                seq.filter((el, n) => {
+                    console.log(el, n);
+                    if (el.match(/(\S{2,})|([A-Z])/)) {
+                        savedIndexes.push(n);
+                    }
+                });
+
+                // Calcul de la longueur finale
+                for (let i = 0; i < savedIndexes.length - 1; i++) {
+                    let distance = Math.abs(savedIndexes[i + 1] - savedIndexes[i]);
+                    if (distance > 1) {
+                        placeHolders.push({
+                            pos: savedIndexes[i] + 1, value: space(distance - 1)
+                        });
+                    }
+                }
+
+                savedIndexes.forEach((si, k) => {
+                    processedSeq.push(seq[si]);
+                });
+
+                placeHolders.forEach((pl, n) => {
+                    let ind = savedIndexes.indexOf(pl.pos - 1);
+                    if (ind != -1) {
+                        let diff = Math.abs(entries[n].length - pl.value.length);
+                        let isPrice = entries[n].match(/\w+\.\w+/)
+                        pl.value = isPrice ? entries[n] : entries[n] + space(diff);
+                        processedSeq.splice(ind, 0, pl.value);
+                    }
+                });
+
+                // console.log('PLACEHOLDERS ---> ', placeHolders);
+                // console.log('SAVED INDEXES --->', savedIndexes);
+                // console.log('PROCESSED SEQ --->', processedSeq);
+
+                result = processedSeq;
+                console.log(result);
+                return result;
+            }
+        }
+
+        function space(n) {
+            let result = "";
+            for (let j = 0; j < n; j++) { result += " "; }
+            return result;
+        }
+
         function getCurrentTime() {
             let minutes = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes();
             return new Date().getHours() + ':' + minutes + ':' + new Date().getSeconds();
@@ -804,6 +932,7 @@ angular.module('main').controller('documentController', [
             var valid = typeof (_container) == 'HTMLDivElement' ? true : false;
             let text_node = document.createElement('p');
             text_node.innerHTML = _innerHTML;
+            text_node.style.fontSize = "8pt";
             _container.appendChild(text_node);
         }
 
@@ -811,6 +940,7 @@ angular.module('main').controller('documentController', [
             if (values.length > 0) {
                 values.forEach(function (val, i) {
                     let td = document.createElement('td');
+                    td.style.fontSize = "7pt";
                     td.style.wordBreak = 'normal';
                     td.style.wordWrap = 'break-word';
                     if (i == values.length - 1) {
@@ -953,7 +1083,7 @@ angular.module('main').controller('documentController', [
             jsDoc.setFontStyle(fStyle);
 
             if (split)
-                text = jsDoc.splitTextToSize(text, length? length : 100);
+                text = jsDoc.splitTextToSize(text, length ? length : 100);
 
             jsDoc.text(text, posX, posY);
         }
@@ -965,6 +1095,20 @@ angular.module('main').controller('documentController', [
                     result += Math.pow((-1) * x, i);
                     console.log('i = ' + i + ', result = ' + result);
                 }
+            }
+            return result;
+        }
+
+        function approximate2(n) {
+            var result = 0;
+            if (n >= 2) {
+                for (var i = 0; i < n + 1; i++) {
+                    result += Math.pow((-1) * 0.1, i);
+                    console.log('i = ' + i + ', result = ' + result);
+                }
+            }
+            else {
+                result = 0.9;
             }
             return result;
         }
@@ -1047,7 +1191,7 @@ angular.module('main').controller('documentController', [
                     "preparation": false,
                     "retour": false,
                     "description":
-                    "VENTE ISSUE COMMANDE ESCAL'ISI",
+                        "VENTE ISSUE COMMANDE ESCAL'ISI",
                     "identifiant": "82381647",
                     "lignesCommandes": [
                         {
@@ -1069,181 +1213,10 @@ angular.module('main').controller('documentController', [
                             "remises": [],
                             "remisesAAppliquerIds": []
                         },
-                        {
-                            "annule": false,
-                            "idLigneCommande": "103219051",
-                            "article": {
-                                "type": "produit",
-                                "identifiant": 58982914,
-                                "estProxicompte": true,
-                                "codeCabestan": "68047",
-                                "tauxTVA": 20, "codeTVA": "10",
-                                "libelle": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                                "remises": []
-                            },
-                            "description": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                            "montantHT": "5.18",
-                            "quantite": "1",
-                            "codePrixChangeable": null,
-                            "remises": [],
-                            "remisesAAppliquerIds": []
-                        },
-                        {
-                            "annule": false,
-                            "idLigneCommande": "103219051",
-                            "article": {
-                                "type": "produit",
-                                "identifiant": 58982914,
-                                "estProxicompte": true,
-                                "codeCabestan": "68047",
-                                "tauxTVA": 20, "codeTVA": "10",
-                                "libelle": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                                "remises": []
-                            },
-                            "description": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                            "montantHT": "5.18",
-                            "quantite": "1",
-                            "codePrixChangeable": null,
-                            "remises": [],
-                            "remisesAAppliquerIds": []
-                        },
-                        {
-                            "annule": false,
-                            "idLigneCommande": "103219051",
-                            "article": {
-                                "type": "produit",
-                                "identifiant": 58982914,
-                                "estProxicompte": true,
-                                "codeCabestan": "68047",
-                                "tauxTVA": 20, "codeTVA": "10",
-                                "libelle": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                                "remises": []
-                            },
-                            "description": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                            "montantHT": "5.18",
-                            "quantite": "1",
-                            "codePrixChangeable": null,
-                            "remises": [],
-                            "remisesAAppliquerIds": []
-                        },
-                        {
-                            "annule": false,
-                            "idLigneCommande": "103219051",
-                            "article": {
-                                "type": "produit",
-                                "identifiant": 58982914,
-                                "estProxicompte": true,
-                                "codeCabestan": "68047",
-                                "tauxTVA": 20, "codeTVA": "10",
-                                "libelle": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                                "remises": []
-                            },
-                            "description": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                            "montantHT": "5.18",
-                            "quantite": "1",
-                            "codePrixChangeable": null,
-                            "remises": [],
-                            "remisesAAppliquerIds": []
-                        },
-                        {
-                            "annule": false,
-                            "idLigneCommande": "103219051",
-                            "article": {
-                                "type": "produit",
-                                "identifiant": 58982914,
-                                "estProxicompte": true,
-                                "codeCabestan": "68047",
-                                "tauxTVA": 20, "codeTVA": "10",
-                                "libelle": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                                "remises": []
-                            },
-                            "description": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                            "montantHT": "5.18",
-                            "quantite": "1",
-                            "codePrixChangeable": null,
-                            "remises": [],
-                            "remisesAAppliquerIds": []
-                        },
-                        {
-                            "annule": false,
-                            "idLigneCommande": "103219051",
-                            "article": {
-                                "type": "produit",
-                                "identifiant": 58982914,
-                                "estProxicompte": true,
-                                "codeCabestan": "68047",
-                                "tauxTVA": 20, "codeTVA": "10",
-                                "libelle": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                                "remises": []
-                            },
-                            "description": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                            "montantHT": "5.18",
-                            "quantite": "1",
-                            "codePrixChangeable": null,
-                            "remises": [],
-                            "remisesAAppliquerIds": []
-                        },
-                        {
-                            "annule": false,
-                            "idLigneCommande": "103219051",
-                            "article": {
-                                "type": "produit",
-                                "identifiant": 58982914,
-                                "estProxicompte": true,
-                                "codeCabestan": "68047",
-                                "tauxTVA": 20, "codeTVA": "20",
-                                "libelle": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                                "remises": []
-                            },
-                            "description": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                            "montantHT": "5.18",
-                            "quantite": "1",
-                            "codePrixChangeable": null,
-                            "remises": [],
-                            "remisesAAppliquerIds": []
-                        },
-                        {
-                            "annule": false,
-                            "idLigneCommande": "103219051",
-                            "article": {
-                                "type": "produit",
-                                "identifiant": 58982914,
-                                "estProxicompte": true,
-                                "codeCabestan": "68047",
-                                "tauxTVA": 20, "codeTVA": "10",
-                                "libelle": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                                "remises": []
-                            },
-                            "description": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                            "montantHT": "5.18",
-                            "quantite": "1",
-                            "codePrixChangeable": null,
-                            "remises": [],
-                            "remisesAAppliquerIds": []
-                        },
-                        {
-                            "annule": false,
-                            "idLigneCommande": "103219051",
-                            "article": {
-                                "type": "produit",
-                                "identifiant": 58982914,
-                                "estProxicompte": true,
-                                "codeCabestan": "68047",
-                                "tauxTVA": 20, "codeTVA": "10",
-                                "libelle": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                                "remises": []
-                            },
-                            "description": "COLISSIMO EMB. FRANCE SANS SIGN. STAR WARS M  2015 UNITE",
-                            "montantHT": "5.18",
-                            "quantite": "1",
-                            "codePrixChangeable": null,
-                            "remises": [],
-                            "remisesAAppliquerIds": []
-                        }
                     ],
                     "montantTotal": "28.32",
                     "montantTotalEncaissable":
-                    "28.32",
+                        "28.32",
                     "vendeur": {
                         "etablissement": null,
                         "identifiant": 60083345,

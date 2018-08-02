@@ -137,6 +137,7 @@
                 s.messages.push({ author: "ISI Bot", content: s.themes[0].logicalAnwser("cher utilisateur") });
 
                 s.changeTheme = function (themeId) {
+                    s.messages = [];
                     s.chatbox.currentTheme = s.themes.find((t) => { return t.themeId == themeId });
                     s.messages.push({ author: "ISI Bot", content: s.chatbox.currentTheme.themeAnswer });
                 };
