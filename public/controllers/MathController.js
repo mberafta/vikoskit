@@ -63,7 +63,7 @@ angular.module('main')
                 let newPoint = new Point(x, y);
                 $scope.ctx.fillStyle = typeof (point) == 'object' ? "#FFF125" : "#FFFFFF";
 
-                $scope.ctx.strokeStyle = "yellow";
+                $scope.ctx.strokeStyle = "red";
                 $scope.ctx.lineWidth = "1";
 
                 $scope.ctx.beginPath();
