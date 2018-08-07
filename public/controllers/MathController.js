@@ -28,7 +28,7 @@ angular.module('main')
             scope.canvas.style.background = "#34495e";
             scope.canvas.style.borderRadius = "10px";
             scope.canvas.style.transition = "0.250s";
-            scope.canvas.height = "600";
+            scope.canvas.height = "450";
             scope.canvas.width = "600";
 
             draw(scope.mesh);

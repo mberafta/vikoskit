@@ -39,6 +39,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(logger('dev'));
 app.use(passport.initialize());
 app.use(passport.session());
+
 require('./routes/index')(app);
 
 // // -------------------------------- //

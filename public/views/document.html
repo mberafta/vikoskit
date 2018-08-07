@@ -5,13 +5,21 @@
         <button class="btn btn-danger" ng-click="getTicketCB()">Ticket CB</button>
         <button class="btn btn-success" ng-click="epsonPrint()">POC EPSON</button>
     </div>
+    <div class="col-xs-4 col-xs-offset-4 text-center" style="margin-top:1.5em; margin-bottom:1.5em;">
+        <div class="form-group">
+            <form>
+                <Label>Type de vignette</Label>
+                <select class="form-control" ng-options="x.name for x in frankings" ng-model="franking.value"></select>
+            </form>
+        </div>
+    </div>
     <div id="output-tables" class="table-responsive" ng-if="true">
 
     </div>
     <div class="col-xs-6 col-xs-offset-3" id="main" style="margin-top:50px; position:absolute; left:-999px;">
 
     </div>
-    <div class="col-xs-6 col-xs-offset-3" style="margin-top: 2em;">
+    <div class="col-xs-6 col-xs-offset-3" style="margin-top: 2em;" ng-if="billDatas.length > 0">
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
                 <thead>

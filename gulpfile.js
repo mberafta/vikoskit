@@ -19,6 +19,8 @@ gulp.task('sass', function () {
 gulp.task('watch', ['browserSync', 'sass'], function () {
     return gulp.watch('public/assets/scss/*.scss', ['sass']);
     return gulp.watch('public/assets/views/*.html', browserSync.reload({ stream: true }));
+    return gulp.watch('public/**/*.js', browserSync.reload({ stream: true }));
+    return gulp.watch('public/**/**/*.js', browserSync.reload({ stream: true }));
     return gulp.watch('public/assets/**/*.html', browserSync.reload);
 });
 
