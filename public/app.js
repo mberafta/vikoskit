@@ -27,7 +27,8 @@
         login: '/login',
         animate: '/animate',
         chatbox: '/chatbox',
-        math:'/math'
+        math:'/math',
+        epson:'/epson'
     };
 
     angular.module('main', injectables)
@@ -74,6 +75,10 @@
                     .when(routes.math, {
                         controller: 'mathController',
                         templateUrl: viewsPath + 'math.html'
+                    })
+                    .when(routes.epson, {
+                        controller:'epsonController',
+                        templateUrl:viewsPath + 'epson.html'
                     })
                     .otherwise({
                         redirectTo: routes.home

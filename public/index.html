@@ -19,6 +19,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="./helpers/epsonHelper.js"></script>
+    <script src="./shared/constructors.js"></script>
+    <script src="./shared/test.js"></script>
 </head>
 
 <body>
@@ -51,6 +53,9 @@
                     </li>
                     <li>
                         <a href="#!/math">Maths</a>
+                    </li>
+                    <li>
+                        <a href="#!/epson">Epson</a>
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" ng-if="getUser() == null">
@@ -102,6 +107,7 @@
     <script src="./controllers/animateController.js"></script>
     <script src="./controllers/chatboxController.js"></script>
     <script src="./controllers/mathController.js"></script>
+    <script src="./controllers/epsonController.js"></script>
 
     <!-- FACTORIES -->
     <script src="./factories/httpInterceptor.js"></script>

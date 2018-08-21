@@ -812,7 +812,25 @@ angular.module('main').controller('documentController', [
             let filteredExtra = bufferObj.extra.split(/\s{2,}/)[1],
                 processedExtra = filteredExtra.replace(' ', '   '),
                 len = processedExtra.length,
-                line0, line4, line5, line6;
+                line0, line4, line5, line6; // Ces indices correspondent aux indices des séquences
+
+            // Analyse des composants extraits afin de déterminer la séquence de formattage
+            let partsLength = parts.length; 
+
+            if (partsLength == 3) {
+                type = $scope.types[2];
+            }
+            else {
+                let isRegistered = parts[2].indexOf('Recommandée') != -1;
+                if(isRegistered){
+                    type = $scope.types[1];
+                }
+                else{
+                    type = $scope.types[0];
+                }
+            }
+
+            console.log('TYPE -> ', type);
 
             //Cas G1 800080 ou 800000G1 800080
             if (processedExtra.length != 11)
